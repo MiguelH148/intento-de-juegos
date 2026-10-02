@@ -1,0 +1,41 @@
+Nombre: Implementación automática en GitHub Pages
+
+en:
+  empujar:
+    sucursales:
+      - maestro
+
+empleos:
+  desplegar:
+    runs-on: ubuntu-latest
+
+    pasos:
+    - nombre: Código de pago
+      Usos: acciones/checkout@v2
+      con:
+        profundidad de búsqueda: 0
+
+    - nombre: Configurar Git
+      correr: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'actions@github.com'
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+
+    - nombre: Eliminar la rama gh-pages del repositorio remoto
+      correr: |
+        git push origin --delete gh-pages || true
+
+    - nombre: Crear nueva rama gh-pages
+      correr: |
+        git checkout --orphan gh-pages
+
+    - nombre: Agregar todos los archivos a gh-pages
+      correr: |
+        git add --all
+        git commit -m "Desplegar en gh-pages"
+
+    - nombre: Enviar a la rama gh-pages
+      correr: |
+        git push origin gh-pages --force
+      entorno:
+        GITHUB_TOKEN: ${{ secretos.GITHUB_TOKEN }}
